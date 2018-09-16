@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Resize Test</title>
+</head>
+<style type="text/css">
+	.container {
+		overflow: hidden;
+	}
+	.left-side {
+		float: left;
+		height: 500px;
+		width: 250px;
+		background-color: #aaa;
+		transition: width .5s;
+	}
+	.left-side.shrink {
+		width: 30px;
+	}
+	#main {
+		height: 500px;
+		background-color: #bbe;
+		overflow: hidden;
+	}
+</style>
+<body>
+<h1>Resize Test</h1>
+<div class="container">
+	<aside class="left-side" id="side"></aside>
+	<main id="main"></main>
+</div>
+<script type="text/javascript" src="../src/EventEmitter.js"></script>
+<script type="text/javascript" src="../src/HiddenObject.js"></script>
+<script type="text/javascript" src="../src/NativeResizeObserver.js"></script>
+<script type="text/javascript" src="../src/Scroll.js"></script>
+<script type="text/javascript">
+	const side = document.getElementById('side');
+	const main = document.getElementById('main');
+	side.addEventListener('click', function() {
+		side.classList.toggle('shrink')
+	});
+	let observer = new ResizeObserverScroll(main);
+	observer.on('resize', () => {
+		console.log('resize');
+	})
+</script>
+</body>
+</html>
