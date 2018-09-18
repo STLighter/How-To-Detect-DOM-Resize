@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover">
 	<title>Resize Test</title>
 </head>
 <style type="text/css">
@@ -26,6 +27,20 @@
 <body>
 <h1>Resize Test</h1>
 <div class="container">
+	<div>
+		<label>Strategy</label>
+		<select id="strategySelect">
+			<option value="none">none</option>
+			<option value="hiddenObject">hidden object</option>
+			<option value="mutationObserver">mutation observer</option>
+			<option value="scroll">scroll</option>
+			<option value="resizeObserver">resize observer</option>
+		</select>
+	</div>
+	<div>
+		<label>display: none</label>
+		<input type="checkbox" id="displayNoneCheckbox">
+	</div>
 	<aside class="left-side" id="side"></aside>
 	<main id="main"></main>
 </div>
@@ -34,15 +49,39 @@
 <script type="text/javascript" src="../src/NativeResizeObserver.js"></script>
 <script type="text/javascript" src="../src/Scroll.js"></script>
 <script type="text/javascript">
+	const strategies = {
+		'none': null,
+		'hiddenObject': HiddenObjectResizeObserver,
+		'mutationObserver': null,
+		'scroll': ScrollResizeObserver,
+		'resizeObserver': NativeResizeObserver
+	}
+	const strategySelect = document.getElementById('strategySelect');
+	const displayNoneCheckbox = document.getElementById('displayNoneCheckbox');
 	const side = document.getElementById('side');
 	const main = document.getElementById('main');
-	side.addEventListener('click', function() {
-		side.classList.toggle('shrink')
+
+	side.addEventListener('click', () => {
+		side.classList.toggle('shrink');
 	});
-	let observer = new ResizeObserverScroll(main);
-	observer.on('resize', () => {
-		console.log('resize');
-	})
+
+	displayNoneCheckbox.addEventListener('change', (e) => {
+		if(e.target.checked) {
+			main.style.display = 'none';
+		} else {
+			main.style.display = '';
+		}
+	});
+
+	let observer = null;
+	strategySelect.addEventListener('change', (e) => {
+		const strategy = strategies[e.target.value];
+		observer && observer.destroy();
+		observer = strategy && new strategy(main);
+		observer && observer.on('resize', () => {
+			console.log('resize');
+		});
+	});
 </script>
 </body>
 </html>

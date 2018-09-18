@@ -1,4 +1,4 @@
-class ResizeObserverScroll extends EventEmitter {
+class ScrollResizeObserver extends EventEmitter {
 	constructor(el) {
 		super();
 		this.el = el;
@@ -29,7 +29,10 @@ class ResizeObserverScroll extends EventEmitter {
 		shrinkTrigger.style.width = shrinkTrigger.style.height = '200%';
 		expandContainer.appendChild(expandTrigger);
 		shrinkContainer.appendChild(shrinkTrigger);
-        expandContainer.onscroll = () => {
+        el.appendChild(expandContainer);
+        el.appendChild(shrinkContainer);
+		this._resetTrigger();
+		expandContainer.onscroll = () => {
         	this.emit('resize');
         	this._resetTrigger();
         }
@@ -37,9 +40,6 @@ class ResizeObserverScroll extends EventEmitter {
         	this.emit('resize');
         	this._resetTrigger();
         }
-        el.appendChild(expandContainer);
-        el.appendChild(shrinkContainer);
-        this._resetTrigger();
 	}
 	_removeObserver() {
 		const el = this.el,
@@ -60,6 +60,7 @@ class ResizeObserverScroll extends EventEmitter {
 		ssw = shrinkContainer.scrollWidth,
 		ssh = shrinkContainer.scrollHeight;
 
+		console.log('reset', esw, esh, eow, eoh, ssw, ssh);
 		expandContainer.scrollLeft = esw;
 		expandContainer.scrollTop = esh;
 		expandTrigger.style.width = eow + 1 + 'px';

@@ -1,4 +1,4 @@
-class ResizeObserverHiddenObject extends EventEmitter {
+class HiddenObjectResizeObserver extends EventEmitter {
 	constructor(el) {
 		super();
 		this.el = el;
