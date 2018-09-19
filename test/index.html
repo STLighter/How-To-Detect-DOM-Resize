@@ -46,13 +46,14 @@
 </div>
 <script type="text/javascript" src="../src/EventEmitter.js"></script>
 <script type="text/javascript" src="../src/HiddenObject.js"></script>
+<script type="text/javascript" src="../src/Mutation.js"></script>
 <script type="text/javascript" src="../src/NativeResizeObserver.js"></script>
 <script type="text/javascript" src="../src/Scroll.js"></script>
 <script type="text/javascript">
 	const strategies = {
 		'none': null,
 		'hiddenObject': HiddenObjectResizeObserver,
-		'mutationObserver': null,
+		'mutationObserver': MutationResizeObserver,
 		'scroll': ScrollResizeObserver,
 		'resizeObserver': NativeResizeObserver
 	}
