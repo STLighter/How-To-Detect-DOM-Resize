@@ -25,7 +25,8 @@ class HiddenObjectResizeObserver extends EventEmitter {
         obj.type = "text/html";
         obj.onload = () => {
         	obj.contentWindow.onresize = () => {
-        		this.emit('resize');
+				const { offsetWidth: width, offsetHeight: height } = this.el;
+        		this.emit('resize', {width, height});
         	}
         }
         el.appendChild(obj);

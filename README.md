@@ -10,7 +10,7 @@
 
 ## 方案
 
-### requestAnimationFrame/setTimeout
+### requestAnimationFrame/setTimeout（demo中未实现）
 
 原理：
 
@@ -21,29 +21,12 @@
 1. 实现简单易懂
 2. 对于所有元素有效
 3. 能检测css`transition`导致的延迟变化
-4. 可检测到元素的移除和隐藏（TODO：需验证）
+4. 可检测到元素的移除和隐藏
 
 缺点：
 
 1. 反复进行不必要的检查，相对来说会更消耗性能，尤其需要监控多个对象时
 2. 回调有一定延迟
-
-### 隐藏的object/iframe
-
-原理：
-
-`resize`事件在改变窗口大小时会触发，比如拖拽改变浏览器窗口大小或手机转屏，但其仅在`window`上触发(部分版本IE除外)。因此可以容器内嵌入一个撑满容器的`object/iframe`，容器尺寸变化时将触发其内部`window`的`resize`事件
-
-优点：
-
-1. 实现简单易懂
-2. 能检测css`transition`导致的延迟变化
-
-缺点：
-
-1. 需要嵌入额外的DOM节点，无法用在`<img>`, `<input>`等元素上
-2. 当容器样式为`position: static`时，需要改变为`position: relative`
-3. 节点的插入删除和`display: none`时不会触发事件
 
 ### MutationObserver/DOMSubtreeModified
 
@@ -62,6 +45,23 @@
 2. 无法处理css中`transition`导致的延迟变化（需要用`transitionend`事件辅助，但仍然只能触发一次）
 3. 会有一些不必要的检查
 4. 在微任务中回调，有些许延迟
+5. 
+### 隐藏的object/iframe
+
+原理：
+
+`resize`事件在改变窗口大小时会触发，比如拖拽改变浏览器窗口大小或手机转屏，但其仅在`window`上触发(部分版本IE除外)。因此可以容器内嵌入一个撑满容器的`object/iframe`，容器尺寸变化时将触发其内部`window`的`resize`事件
+
+优点：
+
+1. 实现简单易懂
+2. 能检测css`transition`导致的延迟变化
+
+缺点：
+
+1. 需要嵌入额外的DOM节点，无法用在`<img>`, `<input>`等元素上
+2. 当容器样式为`position: static`时，需要改变为`position: relative`
+3. 节点的插入删除和`display: none`时不会触发事件
 
 ### scroll事件
 

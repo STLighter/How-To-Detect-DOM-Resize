@@ -3,7 +3,10 @@ class NativeResizeObserver extends EventEmitter {
 		super()
 		this.el = el;
 		this.observer = new ResizeObserver(entries => {
-			this.emit('resize', this.entryFilter(entries));
+			const targetEntry = this.entryFilter(entries);
+			if(targetEntry) {
+				this.emit('resize', targetEntry.contentRect);
+			}
 		});
 		this.observer.observe(this.el);
 	}

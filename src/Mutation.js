@@ -16,11 +16,11 @@ class MutationResizeObserver extends EventEmitter {
         window.addEventListener('resize', this.detect);
     }
     detect() {
-        const { offsetWidth, offsetHeight } = this.el;
-        if(offsetWidth !== this.width || offsetHeight !== this.height) {
-            this.width = offsetWidth;
-            this.height = offsetHeight;
-            this.emit('resize');
+        const { offsetWidth: width, offsetHeight: height } = this.el;
+        if(width !== this.width || height !== this.height) {
+            this.width = width;
+            this.height = height;
+            this.emit('resize', { width, height });
         }
     }
 	destroy() {

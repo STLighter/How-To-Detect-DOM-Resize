@@ -1,88 +1,127 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover">
-	<title>Resize Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover">
+    <title>Resize Test</title>
 </head>
 <style type="text/css">
-	.container {
-		overflow: hidden;
-	}
-	.left-side {
-		float: left;
-		height: 500px;
-		width: 250px;
-		background-color: #aaa;
-		transition: width .5s;
-	}
-	.left-side.shrink {
-		width: 30px;
-	}
-	#main {
-		height: 500px;
-		background-color: #bbe;
-		overflow: hidden;
-	}
+    #container {
+        overflow: hidden;
+    }
+
+    .left-side {
+        float: left;
+        height: 500px;
+        width: 250px;
+        background-color: #aaa;
+        transition: width .5s;
+    }
+
+    .left-side.shrink {
+        width: 30px;
+    }
+
+    #main {
+        height: 500px;
+        background-color: #bbe;
+        overflow: hidden;
+    }
 </style>
+
 <body>
-<h1>Resize Test</h1>
-<div class="container">
-	<div>
-		<label>Strategy</label>
-		<select id="strategySelect">
-			<option value="none">none</option>
-			<option value="hiddenObject">hidden object</option>
-			<option value="mutationObserver">mutation observer</option>
-			<option value="scroll">scroll</option>
-			<option value="resizeObserver">resize observer</option>
-		</select>
-	</div>
-	<div>
-		<label>display: none</label>
-		<input type="checkbox" id="displayNoneCheckbox">
-	</div>
-	<aside class="left-side" id="side"></aside>
-	<main id="main"></main>
-</div>
-<script type="text/javascript" src="../src/EventEmitter.js"></script>
-<script type="text/javascript" src="../src/HiddenObject.js"></script>
-<script type="text/javascript" src="../src/Mutation.js"></script>
-<script type="text/javascript" src="../src/NativeResizeObserver.js"></script>
-<script type="text/javascript" src="../src/Scroll.js"></script>
-<script type="text/javascript">
-	const strategies = {
-		'none': null,
-		'hiddenObject': HiddenObjectResizeObserver,
-		'mutationObserver': MutationResizeObserver,
-		'scroll': ScrollResizeObserver,
-		'resizeObserver': NativeResizeObserver
-	}
-	const strategySelect = document.getElementById('strategySelect');
-	const displayNoneCheckbox = document.getElementById('displayNoneCheckbox');
-	const side = document.getElementById('side');
-	const main = document.getElementById('main');
-
-	side.addEventListener('click', () => {
-		side.classList.toggle('shrink');
-	});
-
-	displayNoneCheckbox.addEventListener('change', (e) => {
-		if(e.target.checked) {
-			main.style.display = 'none';
-		} else {
-			main.style.display = '';
+    <h1>Resize Test</h1>
+    <div id="container">
+        <div>
+            <label>Strategy</label>
+            <select id="strategySelect">
+                <option value="none">none</option>
+                <option value="hiddenObject">hidden object</option>
+                <option value="mutationObserver">mutation observer</option>
+                <option value="scroll">scroll</option>
+                <option value="resizeObserver">resize observer</option>
+            </select>
+        </div>
+        <div>
+            <label>mount</label>
+            <input type="checkbox" checked id="mountCheckbox">
+        </div>
+        <div>
+            <label>display: none</label>
+            <input type="checkbox" id="displayNoneCheckbox">
+        </div>
+        <aside class="left-side" id="side"></aside>
+        <main id="main">
+            <svg id="svg" xmlns="http://www.w3.org/2000/svg" width="0" height="0">
+				<circle id="circle" cx="0" cy="0" r="0" fill="rgb(255, 0, 0)" style="opacity: 0.5"/>
+			</svg>
+        </main>
+    </div>
+    <script type="text/javascript" src="../src/EventEmitter.js"></script>
+    <script type="text/javascript" src="../src/HiddenObject.js"></script>
+    <script type="text/javascript" src="../src/Mutation.js"></script>
+    <script type="text/javascript" src="../src/NativeResizeObserver.js"></script>
+    <script type="text/javascript" src="../src/Scroll.js"></script>
+	<script type="text/javascript">
+        const strategies = {
+            'none': null,
+            'hiddenObject': HiddenObjectResizeObserver,
+            'mutationObserver': MutationResizeObserver,
+            'scroll': ScrollResizeObserver,
+            'resizeObserver': NativeResizeObserver
+        }
+        const strategySelect = document.getElementById('strategySelect');
+        const displayNoneCheckbox = document.getElementById('displayNoneCheckbox');
+        const mountCheckbox = document.getElementById('mountCheckbox');
+        const container = document.getElementById('container');
+        const side = document.getElementById('side');
+        const main = document.getElementById('main');
+		const svg = document.getElementById('svg');
+		const circle = document.getElementById('circle');
+		
+		let { offsetHeight, offsetWidth } = main;
+		
+		function resetSVGStyle(width, height) {
+			svg.setAttribute('width', width);
+			svg.setAttribute('height', height);
+			circle.setAttribute('cx', width / 2);
+			circle.setAttribute('cy', height / 2);
+			circle.setAttribute('r', Math.min(width, height) / 2);
 		}
-	});
 
-	let observer = null;
-	strategySelect.addEventListener('change', (e) => {
-		const strategy = strategies[e.target.value];
-		observer && observer.destroy();
-		observer = strategy && new strategy(main);
-		observer && observer.on('resize', () => {
-			console.log('resize');
-		});
-	});
-</script>
+		resetSVGStyle(offsetWidth, offsetHeight);
+
+        side.addEventListener('click', () => {
+            side.classList.toggle('shrink');
+        });
+
+        displayNoneCheckbox.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                main.style.display = 'none';
+            } else {
+                main.style.display = '';
+            }
+        });
+
+        mountCheckbox.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                container.appendChild(main);
+            } else {
+                container.removeChild(main);
+            }
+        })
+
+        let observer = null;
+        strategySelect.addEventListener('change', (e) => {
+            const strategy = strategies[e.target.value];
+            observer && observer.destroy();
+            observer = strategy && new strategy(main);
+            observer && observer.on('resize', ({ width, height }) => {
+				console.log(`resize | w: ${width}, h: ${height} |`);
+				resetSVGStyle(width, height);
+            });
+        });
+    </script>
 </body>
+
 </html>
