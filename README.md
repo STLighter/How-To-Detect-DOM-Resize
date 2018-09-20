@@ -105,11 +105,11 @@ https://developers.google.com/web/updates/2016/10/resizeobserver
 
 多种策略结合，并包含丰富的介绍文档：
 
-https://github.com/Justineo/resize-detector
+* https://github.com/Justineo/resize-detector
 
 scroll事件：
 
-https://github.com/marcj/css-element-queries
+* https://github.com/marcj/css-element-queries
 
 隐藏的object:
 
